@@ -5,6 +5,8 @@ import { Helmet } from "react-helmet";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import "./App.css";
 
+import "leaflet/dist/leaflet.css";
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -33,7 +35,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <MapContainer id="map"
-          center={[51.505, -0.09]}
+          center={[34.05, -118.24]}
           zoom={13}
           scrollWheelZoom={false}
         >
@@ -41,7 +43,7 @@ function App() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[51.505, -0.09]}>
+          <Marker position={[34.05, -118.24]}>
             <Popup>
               A pretty CSS3 popup. <br /> Easily customizable.
             </Popup>
