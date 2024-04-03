@@ -19,3 +19,12 @@ export interface Store {
     surchargeAmt: string
     dailyCashLimit: string
 }
+
+export enum LocationType {
+    EBT = "EBT",
+    MarketMatch = "Market Match",
+    TypeThree = "Three",
+    TypeFour = "Four",
+    TypeFive = "Five",
+    TypeSix = "Six",
+}
