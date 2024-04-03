@@ -1,26 +1,29 @@
 import { useState } from "react"
 import { Helmet } from "react-helmet"
 import { MapContainer, TileLayer } from "react-leaflet"
+import Modal from "react-modal"
 import "./App.css"
-import reactLogo from "./assets/react.svg"
-import viteLogo from "/vite.svg"
 
 import locations from "./ebt.ts"
 
 import "leaflet/dist/leaflet.css"
 import MapMarker from "./components/MapMarker.js"
 import { Location, Store } from "./types/mapTypes.js"
+import { LocationType } from "./types/mapTypes.js"
+import Filter from "./components/Filter.tsx"
 
 function App() {
-    const [count, setCount] = useState(0)
-    const [locationClicked, setLocationClicked] = useState("-1"); // the ID of which location clicked
-    
-    
+    Modal.setAppElement("#root")
+
+    const filterTypes: String[] = ["dailyCashLimit"]
+    const [selectedFilterTypes, setSelectedFilterTypes] = useState<String[]>([])
+
+    const [locationClicked, setLocationClicked] = useState("-1") // the ID of which location clicked
     const handleMarkerClick = (marker_id: string) => {
-        if(marker_id == locationClicked){
-            setLocationClicked("-1"); // unclick
+        if (marker_id == locationClicked) {
+            setLocationClicked("-1") // unclick
         } else {
-            setLocationClicked(marker_id);
+            setLocationClicked(marker_id)
         }
     }
     const convertLocations = (oldLocations: any[]): Location[] => {
@@ -35,10 +38,12 @@ function App() {
         }))
     }
 
-    const convertLocationsToMap = (oldLocations: any[]): Record<string, Store> => {
-        const locationsMap: Record<string, Store> = {};
-    
-        oldLocations.forEach(oldLocation => {
+    const convertLocationsToMap = (
+        oldLocations: any[],
+    ): Record<string, Store> => {
+        const locationsMap: Record<string, Store> = {}
+
+        oldLocations.forEach((oldLocation) => {
             const location: Location = {
                 id: oldLocation.id,
                 name: oldLocation.locationName,
@@ -47,8 +52,8 @@ function App() {
                     lat: parseFloat(oldLocation.latitude),
                     long: parseFloat(oldLocation.longitude),
                 },
-            };
-          
+            }
+
             const store: Store = {
                 location: location,
                 locationType: oldLocation.locationType,
@@ -57,18 +62,22 @@ function App() {
                 surchargePercent: oldLocation.surchargePercent,
                 surchargeAmt: oldLocation.surchargeAmt,
                 dailyCashLimit: oldLocation.dailyCashLimit,
-            };
-          
-            locationsMap[oldLocation.id] = store;
-        });
-    
-        return locationsMap;
-    };
+            }
+
+            locationsMap[oldLocation.id] = store
+        })
+
+        return locationsMap
+    }
 
     // Convert locations
     const newLocations = convertLocations(locations)
 
     const locationsMap = convertLocationsToMap(locations)
+
+    console.log(locationClicked)
+    console.log(locationClicked != "-1")
+    console.log(locationsMap[locationClicked])
 
     return (
         <>
@@ -85,29 +94,6 @@ function App() {
                     crossOrigin=""
                 />
             </Helmet>
-
-            {(locationClicked != "-1") && 
-                <div className="infoBox" >
-                    <h3>Name: {locationsMap[locationClicked].location.name}</h3>
-                    <p>Address: {locationsMap[locationClicked].location.address}</p>
-                    <p>Location Type: {locationsMap[locationClicked].locationType}</p>
-                    <p>Daily Cash Limit: {locationsMap[locationClicked].dailyCashLimit}</p>
-                </div>
-            }
-
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
             <MapContainer
                 id="map"
                 center={[34.05, -118.249]}
@@ -119,26 +105,59 @@ function App() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {newLocations.map((location) => (
-                   
-                    <MapMarker location={location} handleMarkerClick={handleMarkerClick}/>
-                    
-                ))}
+                <Filter
+                    items={filterTypes}
+                    value={selectedFilterTypes}
+                    onChange={setSelectedFilterTypes}
+                />
+                {newLocations
+                    // .filter((location) =>
+                    //     selectedFilterTypes.includes(location.locationType),
+                    // )
+                    .map((location) => (
+                        <MapMarker
+                            location={location}
+                            handleMarkerClick={handleMarkerClick}
+                            key={location.id}
+                        />
+                    ))}
             </MapContainer>
-            <div className="card">
-                <button
-                    className="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3"
-                    onClick={() => setCount((count) => count + 1)}
+
+            <div
+                style={{
+                    display: locationClicked != "-1" ? "block" : "none",
+                    position: "absolute",
+                    bottom: "0",
+                    left: "0",
+                    width: "100%",
+                    backgroundColor: "white",
+                    padding: "1rem",
+                    boxSizing: "border-box",
+                    zIndex: 1000,
+                }}
+                // use tailwindcss
+                // round top right and left corners
+                className="absolute bottom-0 left-0 w-full bg-white p-4 rounded-t-lg"
+            >
+                <h3
+                    // style using tailwindcss
+                    // font size of 1.5rem
+                    // font weight of bold
+                    className="text-2xl font-bold"
                 >
-                    count is {count}
-                </button>
+                    Name: {locationsMap[locationClicked]?.location.name}
+                </h3>
+                <p className="text-lg">
+                    Address: {locationsMap[locationClicked]?.location.address}
+                </p>
                 <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
+                    Location Type: {locationsMap[locationClicked]?.locationType}
+                </p>
+                <p>
+                    Daily Cash Limit:{" "}
+                    {locationsMap[locationClicked]?.dailyCashLimit}
                 </p>
             </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
         </>
     )
 }

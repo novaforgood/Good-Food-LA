@@ -2,9 +2,9 @@ import React from "react"
 import { LocationType } from "../types/mapTypes"
 
 interface Props {
-    items: LocationType[]
-    value: LocationType[]
-    onChange: (value: LocationType[]) => void
+    items: String[]
+    value: String[]
+    onChange: (value: String[]) => void
 }
 
 const Filter = (props: Props) => {
