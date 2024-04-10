@@ -4,18 +4,25 @@ import { MapContainer, TileLayer } from "react-leaflet"
 import Modal from "react-modal"
 import "./App.css"
 
-import locations from "./ebt.ts"
+import locations from "./combinedData.ts"
 
 import "leaflet/dist/leaflet.css"
 import MapMarker from "./components/MapMarker.js"
 import { Location, Store } from "./types/mapTypes.js"
 import { LocationType } from "./types/mapTypes.js"
 import Filter from "./components/Filter.tsx"
+import Search from "./components/Search.tsx"
 
 function App() {
     Modal.setAppElement("#root")
 
-    const filterTypes: String[] = ["dailyCashLimit"]
+    const filterTypes: String[] = [
+        "EBT",
+        "Maket Match",
+        "Another",
+        "One",
+        "DJ Khaled",
+    ]
     const [selectedFilterTypes, setSelectedFilterTypes] = useState<String[]>([])
 
     const [locationClicked, setLocationClicked] = useState("-1") // the ID of which location clicked
@@ -30,10 +37,10 @@ function App() {
         return oldLocations.map((oldLocation) => ({
             id: oldLocation.id,
             name: oldLocation.locationName,
-            address: `${oldLocation.address1}, ${oldLocation.address2}`,
+            address: oldLocation.address,
             position: {
-                lat: parseFloat(oldLocation.latitude), // Convert string to number
-                long: parseFloat(oldLocation.longitude), // Convert string to number
+                lat: oldLocation.geoPoint.lat, // Convert string to number
+                long: oldLocation.geoPoint.long, // Convert string to number
             },
         }))
     }
@@ -75,10 +82,6 @@ function App() {
 
     const locationsMap = convertLocationsToMap(locations)
 
-    console.log(locationClicked)
-    console.log(locationClicked != "-1")
-    console.log(locationsMap[locationClicked])
-
     return (
         <>
             <Helmet>
@@ -94,6 +97,19 @@ function App() {
                     crossOrigin=""
                 />
             </Helmet>
+
+            <div>
+                <Search />
+            </div>
+
+            <div>
+                <Filter
+                    items={filterTypes}
+                    value={selectedFilterTypes}
+                    onChange={setSelectedFilterTypes}
+                />
+            </div>
+
             <MapContainer
                 id="map"
                 center={[34.05, -118.249]}
@@ -104,11 +120,6 @@ function App() {
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Filter
-                    items={filterTypes}
-                    value={selectedFilterTypes}
-                    onChange={setSelectedFilterTypes}
                 />
                 {newLocations
                     // .filter((location) =>

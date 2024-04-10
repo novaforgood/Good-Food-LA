@@ -9,20 +9,54 @@ interface Props {
 
 const Filter = (props: Props) => {
     return (
-        <div>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: "1rem",
+                padding: "1rem",
+                marginTop: "2rem",
+                marginLeft: "2rem",
+                boxSizing: "border-box",
+                position: "absolute",
+                zIndex: 10000,
+                backgroundColor: "transparent",
+                top: "0",
+                left: "0",
+                overflowX: "scroll",
+                width: "100%",
+            }}
+        >
             {props.items.map((item, index) => {
+                console.log("HELLO")
                 return (
                     <div
                         key={index}
                         // style using tailwindcss
                         // flexbox row no padding, overflow is scrollable
                         className="flex flex-row p-0 overflow-auto"
+                        style={{
+                            padding: "0.5rem",
+                            boxSizing: "border-box",
+                            borderRadius: "0.5rem",
+                            border: "1px solid black",
+                            backgroundColor:
+                                props.value.indexOf(item) > -1
+                                    ? "black"
+                                    : "white",
+                            color:
+                                props.value.indexOf(item) > -1
+                                    ? "white"
+                                    : "black",
+                        }}
                     >
                         <input
                             // style using tailwind, when checked, the color is red and text is white
                             // when not checked, the color is white and text is black
                             // padding of 0.5rem
-                            className="checked:bg-red-500 checked:border-transparent"
+                            id={"filter-" + index}
+                            className="hidden md:visible"
+                            style={{ display: "none" }}
                             type="checkbox"
                             checked={props.value.indexOf(item) > -1}
                             onChange={() => {
@@ -35,7 +69,15 @@ const Filter = (props: Props) => {
                                 }
                             }}
                         />
-                        <label>{item}</label>
+                        <label
+                            htmlFor={"filter-" + index}
+                            style={{
+                                // don't break text
+                                whiteSpace: "nowrap",
+                            }}
+                        >
+                            {item}
+                        </label>
                     </div>
                 )
             })}

@@ -1,4 +1,4 @@
-const data = {
+const mmData = {
 	type: "FeatureCollection",
 	features: [
 		{

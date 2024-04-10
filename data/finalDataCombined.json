@@ -1,0 +1,122 @@
+[
+	{
+		"id": 0,
+		"locationName": "Adams/Vermont",
+		"address": "1432 W Adams Blvd, Los Angeles, CA 90007",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "https://www.facebook.com/adamsvermontfm/",
+		"geoPoint": { "lat": 34.032965, "long": -118.292844 }
+	},
+	{
+		"id": 1,
+		"locationName": "Larchmont Farmers' Market",
+		"address": "209 N Larchmont Blvd, Los Angeles, CA 90004",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "https://www.facebook.com/LarchmontVillageFM",
+		"geoPoint": { "lat": 34.074937, "long": -118.323948 }
+	},
+	{
+		"id": 2,
+		"locationName": "Atwater Village Farmers' Market",
+		"address": "3250 Glendale Blvd, Los Angeles, CA 90039",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "https://seela.org/markets-atwater-village/",
+		"geoPoint": { "lat": 34.118141, "long": -118.260108 }
+	},
+	{
+		"id": 3,
+		"locationName": "East Hollywood Certified Farmers' Market Thursday",
+		"address": "5448 Hollywood Blvd, Los Angeles, CA 90027",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "http://www.ehfarmersmkt.com/",
+		"geoPoint": { "lat": 34.101498, "long": -118.308518 }
+	},
+	{
+		"id": 4,
+		"locationName": "East Hollywood Certified Farmers' Market Monday",
+		"address": "5448 Hollywood Blvd, Los Angeles, CA 90027",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "http://www.ehfarmersmkt.com/",
+		"geoPoint": { "lat": 34.101498, "long": -118.308518 }
+	},
+	{
+		"id": 5,
+		"locationName": "Wellington Square",
+		"address": "4394 W Washington Blvd, Los Angeles, CA 90016",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "http://www.wellingtonsquarefarmersmarket.com/",
+		"geoPoint": { "lat": 34.039559, "long": -118.3351 }
+	},
+	{
+		"id": 6,
+		"locationName": "Hollywood Farmers' Market",
+		"address": "1600 Ivar Ave, Los Angeles, CA 90028",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "https://seela.org/markets-hollywood/",
+		"geoPoint": { "lat": 34.099583, "long": -118.328149 }
+	},
+	{
+		"id": 7,
+		"locationName": "South Pasadena Farmers' Market",
+		"address": "913 Meridian Ave, South Pasadena, CA 91030",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "http://southpasadenafarmersmarket.org/",
+		"geoPoint": { "lat": 34.115179, "long": -118.157513 }
+	},
+	{
+		"id": 8,
+		"locationName": "Alhambra Certified Farmers' Market",
+		"address": "100 S 2nd St, Alhambra, CA 91801",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "https://www.cityofalhambra.org/resources/certified-farmers-market",
+		"geoPoint": { "lat": 34.093138, "long": -118.12819 }
+	},
+	{
+		"id": 9,
+		"locationName": "Beverly Hills Farmers' Market",
+		"address": "9300 Civic Center Dr, Beverly Hills, CA 90210",
+		"hasEBT": true,
+		"hasMarketMatch": true,
+		"rewards": null,
+		"coupons": null,
+		"contact": "NO CONTACT",
+		"websiteURL": "http://www.beverlyhills.org/exploring/farmersmarket/",
+		"geoPoint": { "lat": 34.073657, "long": -118.399101 }
+	}
+]
