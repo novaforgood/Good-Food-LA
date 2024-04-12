@@ -1,86 +1,38 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet"
 import { MapContainer, TileLayer } from "react-leaflet"
 import Modal from "react-modal"
 import "./App.css"
 
-import locations from "./combinedData.ts"
+import { locations } from "./combinedData.ts"
 
 import "leaflet/dist/leaflet.css"
-import MapMarker from "./components/MapMarker.js"
-import { Location, Store } from "./types/mapTypes.js"
-import { LocationType } from "./types/mapTypes.js"
 import Filter from "./components/Filter.tsx"
-import Search from "./components/Search.tsx"
+import MapMarker from "./components/MapMarker.js"
+import { Location } from "./types/mapTypes.js"
 
 function App() {
     Modal.setAppElement("#root")
 
-    const filterTypes: String[] = [
-        "EBT",
-        "Maket Match",
-        "Another",
-        "One",
-        "DJ Khaled",
-    ]
+    const filterTypes: String[] = ["EBT", "Market Match"]
     const [selectedFilterTypes, setSelectedFilterTypes] = useState<String[]>([])
 
-    const [locationClicked, setLocationClicked] = useState("-1") // the ID of which location clicked
+    const [locationClicked, setLocationClicked] = useState(-1) // the ID of which location clicked
     const handleMarkerClick = (marker_id: string) => {
-        if (marker_id == locationClicked) {
-            setLocationClicked("-1") // unclick
+        let marker_id_num = parseInt(marker_id)
+        if (marker_id_num == locationClicked) {
+            setLocationClicked(-1)
         } else {
-            setLocationClicked(marker_id)
+            setLocationClicked(marker_id_num)
         }
     }
-    const convertLocations = (oldLocations: any[]): Location[] => {
-        return oldLocations.map((oldLocation) => ({
-            id: oldLocation.id,
-            name: oldLocation.locationName,
-            address: oldLocation.address,
-            position: {
-                lat: oldLocation.geoPoint.lat, // Convert string to number
-                long: oldLocation.geoPoint.long, // Convert string to number
-            },
-        }))
-    }
 
-    const convertLocationsToMap = (
-        oldLocations: any[],
-    ): Record<string, Store> => {
-        const locationsMap: Record<string, Store> = {}
-
-        oldLocations.forEach((oldLocation) => {
-            const location: Location = {
-                id: oldLocation.id,
-                name: oldLocation.locationName,
-                address: `${oldLocation.address1}, ${oldLocation.address2}`,
-                position: {
-                    lat: parseFloat(oldLocation.latitude),
-                    long: parseFloat(oldLocation.longitude),
-                },
-            }
-
-            const store: Store = {
-                location: location,
-                locationType: oldLocation.locationType,
-                cashBackFlag: oldLocation.cashBackFlag,
-                surchargeFlag: oldLocation.surchargeFlag,
-                surchargePercent: oldLocation.surchargePercent,
-                surchargeAmt: oldLocation.surchargeAmt,
-                dailyCashLimit: oldLocation.dailyCashLimit,
-            }
-
-            locationsMap[oldLocation.id] = store
+    const locationsMap = useRef<Map<number, Location>>(new Map())
+    useEffect(() => {
+        locations.forEach((location) => {
+            locationsMap.current.set(location.id, location)
         })
-
-        return locationsMap
-    }
-
-    // Convert locations
-    const newLocations = convertLocations(locations)
-
-    const locationsMap = convertLocationsToMap(locations)
+    }, [locations])
 
     return (
         <>
@@ -98,9 +50,9 @@ function App() {
                 />
             </Helmet>
 
-            <div>
+            {/* <div>
                 <Search />
-            </div>
+            </div> */}
 
             <div>
                 <Filter
@@ -121,10 +73,29 @@ function App() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {newLocations
-                    // .filter((location) =>
-                    //     selectedFilterTypes.includes(location.locationType),
-                    // )
+                {locations
+                    .filter((location) => {
+                        if (selectedFilterTypes.length === 0) {
+                            return true
+                        }
+
+                        if (
+                            selectedFilterTypes.includes("EBT") &&
+                            location.hasEBT
+                        ) {
+                            return true
+                        }
+
+                        if (
+                            selectedFilterTypes.includes("Market Match") &&
+                            location.hasMarketMatch
+                        ) {
+                            console.log("Market Match")
+                            return true
+                        }
+
+                        return false
+                    })
                     .map((location) => (
                         <MapMarker
                             location={location}
@@ -136,7 +107,7 @@ function App() {
 
             <div
                 style={{
-                    display: locationClicked != "-1" ? "block" : "none",
+                    display: locationClicked !== -1 ? "block" : "none",
                     position: "absolute",
                     bottom: "0",
                     left: "0",
@@ -146,27 +117,27 @@ function App() {
                     boxSizing: "border-box",
                     zIndex: 1000,
                 }}
-                // use tailwindcss
-                // round top right and left corners
                 className="absolute bottom-0 left-0 w-full bg-white p-4 rounded-t-lg"
             >
-                <h3
-                    // style using tailwindcss
-                    // font size of 1.5rem
-                    // font weight of bold
-                    className="text-2xl font-bold"
-                >
-                    Name: {locationsMap[locationClicked]?.location.name}
+                <h3 className="text-2xl font-bold">
+                    Name:{" "}
+                    {locationsMap.current.get(locationClicked)?.locationName}
                 </h3>
                 <p className="text-lg">
-                    Address: {locationsMap[locationClicked]?.location.address}
+                    Address:{" "}
+                    {locationsMap.current.get(locationClicked)?.address}
                 </p>
-                <p>
-                    Location Type: {locationsMap[locationClicked]?.locationType}
+                <p className="text-lg">
+                    EBT:{" "}
+                    {locationsMap.current.get(locationClicked)?.hasEBT
+                        ? "Yes"
+                        : "No"}
                 </p>
-                <p>
-                    Daily Cash Limit:{" "}
-                    {locationsMap[locationClicked]?.dailyCashLimit}
+                <p className="text-lg">
+                    Market Match:{" "}
+                    {locationsMap.current.get(locationClicked)?.hasMarketMatch
+                        ? "Yes"
+                        : "No"}
                 </p>
             </div>
         </>

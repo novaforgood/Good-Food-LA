@@ -5,3 +5,9 @@
 *::-webkit-scrollbar {
     display: none;
 }
+
+/* TODO: FIX USE LEAFLET CONTROLS */
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+    margin-top: 4.5rem !important;
+}
