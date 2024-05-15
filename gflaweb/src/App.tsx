@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useReducer, useRef, useState } from "react"
 import { Helmet } from "react-helmet"
 import { MapContainer, TileLayer } from "react-leaflet"
 import Modal from "react-modal"
 import "./App.css"
 
-import { locations } from "./combinedData.ts"
+// import { locations } from "./combinedData.ts"
+import { locations } from "./labeledData.ts"
 
 import "leaflet/dist/leaflet.css"
 import Filter from "./components/Filter.tsx"
@@ -27,12 +28,23 @@ function App() {
         }
     }
 
-    const locationsMap = useRef<Map<number, Location>>(new Map())
+    const locationsList = useRef([] as Location[])
+    const forceUpdate = useReducer(() => ({}), {})[1].bind(null, {})
+
     useEffect(() => {
-        locations.forEach((location) => {
-            locationsMap.current.set(location.id, location)
-        })
-    }, [locations])
+        // locations is a map from number to object
+        // turn locations into a list
+        let newLocationsList = [] as Location[]
+
+        for (let [key, value] of Object.entries(locations)) {
+            newLocationsList.push(value)
+        }
+
+        locationsList.current = newLocationsList
+        forceUpdate()
+    }, [])
+
+    let location = locations[locationClicked]
 
     return (
         <>
@@ -73,7 +85,7 @@ function App() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {locations
+                {locationsList.current
                     .filter((location) => {
                         if (selectedFilterTypes.length === 0) {
                             return true
@@ -104,42 +116,108 @@ function App() {
                         />
                     ))}
             </MapContainer>
-
-            <div
-                style={{
-                    display: locationClicked !== -1 ? "block" : "none",
-                    position: "absolute",
-                    bottom: "0",
-                    left: "0",
-                    width: "100%",
-                    backgroundColor: "white",
-                    padding: "1rem",
-                    boxSizing: "border-box",
-                    zIndex: 1000,
-                }}
-                className="absolute bottom-0 left-0 w-full bg-white p-4 rounded-t-lg"
-            >
-                <h3 className="text-2xl font-bold">
-                    Name:{" "}
-                    {locationsMap.current.get(locationClicked)?.locationName}
-                </h3>
-                <p className="text-lg">
-                    Address:{" "}
-                    {locationsMap.current.get(locationClicked)?.address}
-                </p>
-                <p className="text-lg">
-                    EBT:{" "}
-                    {locationsMap.current.get(locationClicked)?.hasEBT
-                        ? "Yes"
-                        : "No"}
-                </p>
-                <p className="text-lg">
-                    Market Match:{" "}
-                    {locationsMap.current.get(locationClicked)?.hasMarketMatch
-                        ? "Yes"
-                        : "No"}
-                </p>
-            </div>
+            {locationClicked !== -1 && (
+                <div
+                    style={{
+                        display: locationClicked !== -1 ? "block" : "none",
+                        position: "absolute",
+                        bottom: "0",
+                        left: "0",
+                        width: "100%",
+                        backgroundColor: "white",
+                        padding: "1rem",
+                        boxSizing: "border-box",
+                        zIndex: 1000,
+                    }}
+                    className="absolute bottom-0 left-0 w-full bg-white p-4 rounded-t-lg"
+                >
+                    <h3 className="text-2xl font-bold">
+                        Name: {location.locationName}
+                    </h3>
+                    {location.address && (
+                        <p className="text-lg">Address: {location.address}</p>
+                    )}
+                    {location.websiteURL && (
+                        <p className="text-lg">
+                            Website: {location.websiteURL}
+                        </p>
+                    )}
+                    {location.contact && (
+                        <p className="text-lg">Contact: {location.contact}</p>
+                    )}
+                    {location.hasEBT && (
+                        <p className="text-lg">
+                            EBT: {location.hasEBT === "TRUE" ? "Yes" : "No"}
+                        </p>
+                    )}
+                    {location.hasMarketMatch && (
+                        <p className="text-lg">
+                            Market Match:{" "}
+                            {location.hasMarketMatch === "TRUE" ? "Yes" : "No"}
+                        </p>
+                    )}
+                    {location.phoneNumber && (
+                        <p className="text-lg">
+                            Phone Number: {location.phoneNumber}
+                        </p>
+                    )}
+                    {location.email && (
+                        <p className="text-lg">Email: {location.email}</p>
+                    )}
+                    {location.storeType && (
+                        <p className="text-lg">
+                            Store Type: {location.storeType}
+                        </p>
+                    )}
+                    {location.freshFruit && (
+                        <p className="text-lg">
+                            Fresh Fruit: {location.freshFruit}
+                        </p>
+                    )}
+                    {location.freshVegetables && (
+                        <p className="text-lg">
+                            Fresh Vegetables: {location.freshVegetables}
+                        </p>
+                    )}
+                    {location.freshDairy && (
+                        <p className="text-lg">
+                            Fresh Dairy: {location.freshDairy}
+                        </p>
+                    )}
+                    {location.unprocessedMeat && (
+                        <p className="text-lg">
+                            Unprocessed Meat: {location.unprocessedMeat}
+                        </p>
+                    )}
+                    {location.flagged && (
+                        <p className="text-lg">
+                            Flagged:{" "}
+                            {location.flagged === "TRUE" ? "Yes" : "No"}
+                        </p>
+                    )}
+                    {location.flagReason && (
+                        <p className="text-lg">
+                            Flag Reason: {location.flagReason}
+                        </p>
+                    )}
+                    {location.noInfo && (
+                        <p className="text-lg">
+                            No Info: {location.noInfo === "TRUE" ? "Yes" : "No"}
+                        </p>
+                    )}
+                    {location.permanentlyClosed && (
+                        <p className="text-lg">
+                            Permanently Closed:{" "}
+                            {location.permanentlyClosed === "TRUE"
+                                ? "Yes"
+                                : "No"}
+                        </p>
+                    )}
+                    {location.comments && (
+                        <p className="text-lg">Comments: {location.comments}</p>
+                    )}
+                </div>
+            )}
         </>
     )
 }

@@ -43,6 +43,7 @@ const LA_COORDS = {
 };
 const BANNED_SUBSTRINGS = [
 	"7-Eleven",
+	"7 Eleven",
 	"CVS",
 	"Pizza Hut",
 	"Liquor",
@@ -58,10 +59,11 @@ const BANNED_SUBSTRINGS = [
 	"Gas Station",
 ];
 
+const LA_DISTANCE = 16 * 1000; // 60 km
+
 ebtData.forEach((location) => {
-	// only add if within 60 km of LA
 	let ebtLocation = ebtToLocation(location);
-	if (geolib.getDistance(ebtLocation, LA_COORDS, 1) > 5 * 1000) return;
+	if (geolib.getDistance(ebtLocation, LA_COORDS, 1) > LA_DISTANCE) return;
 
 	// only add if location.locationType is "FOOD" or "FM"
 	// TODO: also do "RE"
@@ -81,9 +83,8 @@ ebtData.forEach((location) => {
 });
 
 mmData.forEach((location) => {
-	// only add if within 60 km of LA
 	let mmLocation = mmToLocation(location);
-	if (geolib.getDistance(mmLocation, LA_COORDS, 1) > 10 * 1000) return;
+	if (geolib.getDistance(mmLocation, LA_COORDS, 1) > LA_DISTANCE) return;
 
 	marketMatchLocations.set(location.properties.id, location);
 });
@@ -115,6 +116,7 @@ function getEBTAddress(ebtLocation) {
 
 function makeFinalData(ebtLocation, mmLocation) {
 	if (!ebtLocation) {
+		// based on mm
 		return {
 			id: currentID,
 			locationName: mmLocation.properties.name,
@@ -129,10 +131,19 @@ function makeFinalData(ebtLocation, mmLocation) {
 				lat: parseFloat(mmLocation.geometry.coordinates[1]),
 				long: parseFloat(mmLocation.geometry.coordinates[0]),
 			},
+			season_1_start: mmLocation.properties.season_1_start,
+			season_1_end: mmLocation.properties.season_1_end,
+			season_2_start: mmLocation.properties.season_2_start,
+			season_2_end: mmLocation.properties.season_2_end,
+			days: mmLocation.properties.days,
+			frequency: mmLocation.properties.frequency,
+			time_open: mmLocation.properties.time_open,
+			time_close: mmLocation.properties.time_close,
 		};
 	}
 
 	if (!mmLocation) {
+		// based on ebt
 		return {
 			id: currentID,
 			locationName: ebtLocation.locationName,
@@ -151,6 +162,7 @@ function makeFinalData(ebtLocation, mmLocation) {
 	}
 
 	return {
+		// based on both
 		id: currentID,
 		locationName: mmLocation.properties.name,
 		address: getEBTAddress(ebtLocation),
@@ -164,6 +176,14 @@ function makeFinalData(ebtLocation, mmLocation) {
 			lat: ebtLocation.latitude,
 			long: ebtLocation.longitude,
 		},
+		season_1_start: mmLocation.properties.season_1_start,
+		season_1_end: mmLocation.properties.season_1_end,
+		season_2_start: mmLocation.properties.season_2_start,
+		season_2_end: mmLocation.properties.season_2_end,
+		days: mmLocation.properties.days,
+		frequency: mmLocation.properties.frequency,
+		time_open: mmLocation.properties.time_open,
+		time_close: mmLocation.properties.time_close,
 	};
 }
 
