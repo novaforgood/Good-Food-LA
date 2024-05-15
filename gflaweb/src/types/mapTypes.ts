@@ -22,8 +22,8 @@ export interface Location {
     address: string
     websiteURL: string | null
     contact: string | null
-    hasEBT: string
-    hasMarketMatch: string
+    hasEBT: boolean
+    hasMarketMatch: boolean
     rewards: string | null
     coupons: string | null
     season_1_start: string
@@ -42,10 +42,8 @@ export interface Location {
     freshVegetables: string
     freshDairy: string
     unprocessedMeat: string
-    flagged: string
+    flagged: boolean
     flagReason: string
-    noInfo: string
-    permanentlyClosed: string
     comments: string
     position: Position
 }

@@ -11,12 +11,23 @@ import "leaflet/dist/leaflet.css"
 import Filter from "./components/Filter.tsx"
 import MapMarker from "./components/MapMarker.js"
 import { Location } from "./types/mapTypes.js"
+import RangeFilter from "./components/RangeFilter.tsx"
 
 function App() {
     Modal.setAppElement("#root")
 
-    const filterTypes: String[] = ["EBT", "Market Match"]
-    const [selectedFilterTypes, setSelectedFilterTypes] = useState<String[]>([])
+    const filterTypes: string[] = ["EBT", "Market Match"]
+    const [selectedFilterTypes, setSelectedFilterTypes] = useState<string[]>([])
+
+    const rangeFilterTypes: string[] = ["Fruit", "Vegetables", "Dairy", "Meat"]
+    const [selectedRangeFilterTypes, setSelectedRangeFilterTypes] = useState<
+        number[]
+    >([0, 0, 0, 0])
+    function handleRangeFilterChange(index: number, value: number) {
+        let newSelectedRangeFilterTypes = [...selectedRangeFilterTypes]
+        newSelectedRangeFilterTypes[index] = value
+        setSelectedRangeFilterTypes(newSelectedRangeFilterTypes)
+    }
 
     const [locationClicked, setLocationClicked] = useState(-1) // the ID of which location clicked
     const handleMarkerClick = (marker_id: string) => {
@@ -46,6 +57,8 @@ function App() {
 
     let location = locations[locationClicked]
 
+    console.log("filters", selectedFilterTypes)
+
     return (
         <>
             <Helmet>
@@ -62,16 +75,37 @@ function App() {
                 />
             </Helmet>
 
-            {/* <div>
-                <Search />
-            </div> */}
-
-            <div>
-                <Filter
+            <div
+                style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    zIndex: 1000,
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    width: "100%",
+                    boxSizing: "border-box",
+                }}
+            >
+                {/* <Filter
                     items={filterTypes}
                     value={selectedFilterTypes}
                     onChange={setSelectedFilterTypes}
-                />
+                /> */}
+
+                {
+                    // range filters
+                    rangeFilterTypes.map((rangeFilterType, index) => (
+                        <RangeFilter
+                            key={index}
+                            name={rangeFilterType}
+                            value={selectedRangeFilterTypes[index]}
+                            onChange={(value) =>
+                                handleRangeFilterChange(index, value)
+                            }
+                        />
+                    ))
+                }
             </div>
 
             <MapContainer
@@ -87,26 +121,48 @@ function App() {
                 />
                 {locationsList.current
                     .filter((location) => {
-                        if (selectedFilterTypes.length === 0) {
-                            return true
-                        }
+                        // if (selectedFilterTypes.length === 0) {
+                        //     return true
+                        // }
 
                         if (
                             selectedFilterTypes.includes("EBT") &&
-                            location.hasEBT
+                            !location.hasEBT
                         ) {
-                            return true
+                            return false
                         }
 
                         if (
                             selectedFilterTypes.includes("Market Match") &&
-                            location.hasMarketMatch
+                            !location.hasMarketMatch
                         ) {
                             console.log("Market Match")
-                            return true
+                            return false
                         }
 
-                        return false
+                        const healthAttributes = [
+                            location.freshFruit,
+                            location.freshVegetables,
+                            location.freshDairy,
+                            location.unprocessedMeat,
+                        ]
+
+                        for (let i = 0; i < healthAttributes.length; i++) {
+                            if (selectedRangeFilterTypes[i] === 1) {
+                                if (healthAttributes[i] === "NONE") {
+                                    return false
+                                }
+                            } else if (selectedRangeFilterTypes[i] === 2) {
+                                if (
+                                    healthAttributes[i] === "NONE" ||
+                                    healthAttributes[i] === "LOW"
+                                ) {
+                                    return false
+                                }
+                            }
+                        }
+
+                        return true
                     })
                     .map((location) => (
                         <MapMarker
@@ -147,13 +203,13 @@ function App() {
                     )}
                     {location.hasEBT && (
                         <p className="text-lg">
-                            EBT: {location.hasEBT === "TRUE" ? "Yes" : "No"}
+                            EBT: {location.hasEBT ? "Yes" : "No"}
                         </p>
                     )}
                     {location.hasMarketMatch && (
                         <p className="text-lg">
                             Market Match:{" "}
-                            {location.hasMarketMatch === "TRUE" ? "Yes" : "No"}
+                            {location.hasMarketMatch ? "Yes" : "No"}
                         </p>
                     )}
                     {location.phoneNumber && (
@@ -191,26 +247,12 @@ function App() {
                     )}
                     {location.flagged && (
                         <p className="text-lg">
-                            Flagged:{" "}
-                            {location.flagged === "TRUE" ? "Yes" : "No"}
+                            Flagged: {location.flagged ? "Yes" : "No"}
                         </p>
                     )}
                     {location.flagReason && (
                         <p className="text-lg">
                             Flag Reason: {location.flagReason}
-                        </p>
-                    )}
-                    {location.noInfo && (
-                        <p className="text-lg">
-                            No Info: {location.noInfo === "TRUE" ? "Yes" : "No"}
-                        </p>
-                    )}
-                    {location.permanentlyClosed && (
-                        <p className="text-lg">
-                            Permanently Closed:{" "}
-                            {location.permanentlyClosed === "TRUE"
-                                ? "Yes"
-                                : "No"}
                         </p>
                     )}
                     {location.comments && (
