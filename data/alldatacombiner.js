@@ -1,6 +1,8 @@
 const data = require("./alldata.js");
-const ebtData = data.ebtData;
+const sylmarData = require("./sylmarebt.js");
+// const ebtData = data.ebtData;
 const mmData = data.mmData;
+const ebtData = sylmarData.sylmarebt.locations;
 const geolib = require("geolib");
 
 // final data model
@@ -37,10 +39,16 @@ function ebtToLocation(ebtLocation) {
 let marketMatchLocations = new Map();
 let ebtLocations = new Map();
 
+// const LA_COORDS = {
+// 	latitude: 34.0549,
+// 	longitude: -118.2426,
+// };
+
 const LA_COORDS = {
-	latitude: 34.0549,
-	longitude: -118.2426,
+	latitude: 34.3051382,
+	longitude: -118.4676895,
 };
+
 const BANNED_SUBSTRINGS = [
 	"7-Eleven",
 	"7 Eleven",
@@ -59,7 +67,7 @@ const BANNED_SUBSTRINGS = [
 	"Gas Station",
 ];
 
-const LA_DISTANCE = 16 * 1000; // 60 km
+const LA_DISTANCE = 20 * 1000; // 60 km
 
 ebtData.forEach((location) => {
 	let ebtLocation = ebtToLocation(location);
@@ -79,12 +87,16 @@ ebtData.forEach((location) => {
 	)
 		return;
 
+	location.DISTANCE_FROM_SYLMAR = geolib.getDistance(ebtLocation, LA_COORDS, 1);
+
 	ebtLocations.set(location.id, location);
 });
 
 mmData.forEach((location) => {
 	let mmLocation = mmToLocation(location);
 	if (geolib.getDistance(mmLocation, LA_COORDS, 1) > LA_DISTANCE) return;
+
+	location.DISTANCE_FROM_SYLMAR = geolib.getDistance(mmLocation, LA_COORDS, 1);
 
 	marketMatchLocations.set(location.properties.id, location);
 });
@@ -139,6 +151,7 @@ function makeFinalData(ebtLocation, mmLocation) {
 			frequency: mmLocation.properties.frequency,
 			time_open: mmLocation.properties.time_open,
 			time_close: mmLocation.properties.time_close,
+			distance_from_sylmar: mmLocation.DISTANCE_FROM_SYLMAR,
 		};
 	}
 
@@ -158,6 +171,7 @@ function makeFinalData(ebtLocation, mmLocation) {
 				lat: ebtLocation.geoPoint.lat,
 				long: ebtLocation.geoPoint.lon,
 			},
+			distance_from_sylmar: ebtLocation.DISTANCE_FROM_SYLMAR,
 		};
 	}
 
@@ -184,6 +198,7 @@ function makeFinalData(ebtLocation, mmLocation) {
 		frequency: mmLocation.properties.frequency,
 		time_open: mmLocation.properties.time_open,
 		time_close: mmLocation.properties.time_close,
+		distance_from_sylmar: mmLocation.DISTANCE_FROM_SYLMAR,
 	};
 }
 
@@ -226,4 +241,4 @@ for (let [key, value] of marketMatchLocations) {
 // save the final data to a file
 const fs = require("fs");
 const { parse } = require("path");
-fs.writeFileSync("finalDataCombined.json", JSON.stringify(finalData));
+fs.writeFileSync("sylmarDataCombined.json", JSON.stringify(finalData));
