@@ -1,7 +1,5 @@
-import { useState } from "react"
-
 function Search() {
-    const check = (inputQuery: string) => {}
+    // const check = (inputQuery: string) => {}
 
     return (
         <div

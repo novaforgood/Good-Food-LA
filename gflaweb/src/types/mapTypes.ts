@@ -21,7 +21,7 @@ export interface Location {
     locationName: string
     address: string
     websiteURL: string | null
-    contact: string | null
+    contact?: string | null
     hasEBT: boolean
     hasMarketMatch: boolean
     rewards: string | null
@@ -34,9 +34,9 @@ export interface Location {
     frequency: string
     time_open: string
     time_close: string
-    clickThisLink: string
-    phoneNumber: string
-    email: string
+    searchLink: string
+    phoneNumber?: string
+    email?: string
     storeType: string
     freshFruit: string
     freshVegetables: string
@@ -46,4 +46,6 @@ export interface Location {
     flagReason: string
     comments: string
     position: Position
+
+    sylmarDistance?: string
 }

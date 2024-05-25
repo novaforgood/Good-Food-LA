@@ -13,10 +13,13 @@
         "helmet": "^7.1.0",
         "leaflet": "^1.9.4",
         "react": "^18.2.0",
+        "react-animate-height": "^3.2.3",
         "react-dom": "^18.2.0",
         "react-helmet": "^6.1.0",
+        "react-icons": "^5.2.1",
         "react-leaflet": "^4.2.1",
-        "react-modal": "^3.16.1"
+        "react-modal": "^3.16.1",
+        "usehooks-ts": "^3.1.0"
     },
     "devDependencies": {
         "@types/leaflet": "^1.9.8",

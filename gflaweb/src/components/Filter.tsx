@@ -1,10 +1,16 @@
-import React from "react"
-import { LocationType } from "../types/mapTypes"
-
 interface Props {
     items: string[]
     value: string[]
     onChange: (value: string[]) => void
+}
+
+const itemsToSpanish: { [key: string]: string } = {
+    EBT: "EBT",
+    "Market Match": "Market Match",
+    Fruit: "Frutas",
+    Vegetables: "Verduras",
+    Dairy: "Lácteos",
+    Meat: "Carne",
 }
 
 const Filter = (props: Props) => {
@@ -28,7 +34,7 @@ const Filter = (props: Props) => {
             }}
         >
             {props.items.map((item, index) => {
-                console.log("HELLO")
+                // console.log("HELLO")
                 return (
                     <div
                         key={index}
@@ -39,7 +45,7 @@ const Filter = (props: Props) => {
                             padding: "0.5rem",
                             boxSizing: "border-box",
                             borderRadius: "0.5rem",
-                            border: "1px solid black",
+                            border: "2px solid black",
                             backgroundColor:
                                 props.value.indexOf(item) > -1
                                     ? "black"
@@ -48,6 +54,7 @@ const Filter = (props: Props) => {
                                 props.value.indexOf(item) > -1
                                     ? "white"
                                     : "black",
+                            transition: "all 0.3s",
                         }}
                     >
                         <input
@@ -76,7 +83,10 @@ const Filter = (props: Props) => {
                                 whiteSpace: "nowrap",
                             }}
                         >
-                            {item}
+                            {
+                                // item
+                                itemsToSpanish[item] || item
+                            }
                         </label>
                     </div>
                 )

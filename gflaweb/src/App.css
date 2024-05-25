@@ -10,4 +10,5 @@
 .leaflet-touch .leaflet-control-layers,
 .leaflet-touch .leaflet-bar {
     margin-top: 4.5rem !important;
+    border: 2px solid black !important;
 }

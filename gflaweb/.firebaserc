@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "sonaviscool"
+  },
+  "targets": {
+    "sonaviscool": {
+      "hosting": {
+        "gfla-test": [
+          "gfla-test"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -2,8 +2,8 @@ import csv
 import json
 
 # Define file paths
-csvFilePath = 'labeledData.csv'
-jsonFilePath = 'labeledData.json'
+csvFilePath = 'sylmar-final.csv'
+jsonFilePath = 'sylmar-final.json'
 
 # Create a dictionary to store data
 data = {}
@@ -45,9 +45,6 @@ with open(csvFilePath) as csvFile:
             # Remove noInfo and permanentlyClosed columns
             row.pop('noInfo', None)
             row.pop('permanentlyClosed', None)
-            # add 1000 to the id
-            id = str(int(id) + 10000)
-            row['id'] = id
             data[id] = row
 
 # Write the data to a JSON file
