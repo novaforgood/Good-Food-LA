@@ -209,7 +209,8 @@ function App() {
             <MapContainer
                 id="map"
                 // center={[34.05, -118.249]}
-                center={[34.3051382, -118.4676895]}
+                // center={[34.3051382, -118.4676895]}
+                center={userLocation || [34.3051382, -118.4676895]}
                 zoom={13}
                 scrollWheelZoom={false}
                 style={{ height: "100vh", width: "100%" }}
@@ -240,37 +241,29 @@ function App() {
                         }
 
                         if (
-                            (selectedFilterTypes.includes("Fruit") &&
-                                location.freshFruit === "NONE") ||
-                            location.freshFruit === "LOW" ||
-                            location.freshFruit === ""
+                            selectedFilterTypes.includes("Fruit") &&
+                            location.freshFruit !== "HIGH"
                         ) {
                             return false
                         }
 
                         if (
-                            (selectedFilterTypes.includes("Vegetables") &&
-                                location.freshVegetables === "NONE") ||
-                            location.freshVegetables === "LOW" ||
-                            location.freshVegetables === ""
+                            selectedFilterTypes.includes("Vegetables") &&
+                            location.freshVegetables !== "HIGH"
                         ) {
                             return false
                         }
 
                         if (
-                            (selectedFilterTypes.includes("Dairy") &&
-                                location.freshDairy === "NONE") ||
-                            location.freshDairy === "LOW" ||
-                            location.freshDairy === ""
+                            selectedFilterTypes.includes("Dairy") &&
+                            location.freshDairy !== "HIGH"
                         ) {
                             return false
                         }
 
                         if (
-                            (selectedFilterTypes.includes("Meat") &&
-                                location.unprocessedMeat === "NONE") ||
-                            location.unprocessedMeat === "LOW" ||
-                            location.unprocessedMeat === ""
+                            selectedFilterTypes.includes("Meat") &&
+                            location.unprocessedMeat !== "HIGH"
                         ) {
                             return false
                         }
@@ -549,7 +542,7 @@ function App() {
                                 borderRadius: "1rem",
                                 backgroundColor:
                                     levelToColor[
-                                        location?.freshFruit || "NONE"
+                                        location?.freshVegetables || "NONE"
                                     ],
                             }}
                         >
@@ -573,7 +566,7 @@ function App() {
                                 borderRadius: "1rem",
                                 backgroundColor:
                                     levelToColor[
-                                        location?.freshFruit || "NONE"
+                                        location?.freshDairy || "NONE"
                                     ],
                             }}
                         >
@@ -597,7 +590,7 @@ function App() {
                                 borderRadius: "1rem",
                                 backgroundColor:
                                     levelToColor[
-                                        location?.freshFruit || "NONE"
+                                        location?.unprocessedMeat || "NONE"
                                     ],
                             }}
                         >
